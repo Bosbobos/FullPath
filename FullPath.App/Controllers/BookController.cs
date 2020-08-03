@@ -11,7 +11,7 @@ namespace FullPath.App.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly IClassRoomManager _entityManager;
+        private readonly IBookManager _entityManager;
         private readonly IValidator<ClassRoomCreateRequest> _validatorCreateRequest;
 
         public BookController(IClassRoomManager entityManager, IValidator<ClassRoomCreateRequest> validatorCreateRequest)

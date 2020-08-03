@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FullPath.Storage.Entity
 {
-    class Book
+    public class Book
     {
         public Guid Id { get; set; }
         public string Author { get; set; }

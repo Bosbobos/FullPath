@@ -1,52 +1,56 @@
-﻿using System;
+﻿using AutoMapper;
+using FullPath.Storage;
+using FullPath.Storage.Entity;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FullPath.Books
 {
     class BookManager
     {
-        private readonly ExampleFullPathContext _db;
+        private readonly FullPathContext _db;
         private readonly IMapper _mapper;
 
-        public ClassRoomManager(ExampleFullPathContext db, IMapper mapper)
+        public BookManager(FullPathContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
 
-        public async Task<ClassRoomDto> Create(ClassRoomCreateRequest request)
+        public async Task<BookDto> Create(BookCreateRequest request)
         {
-            var entity = new ClassRoom()
+            var entity = new Book()
             {
                 Id = Guid.NewGuid(),
-                ClassNum = request.ClassNum,
-                Color = request.Color,
-                Height = 10,
-                Width = 20
+                Author = request.Author,
+                Annotation = request.Annotation,
+                CreatedAt = request.CreatedAt,
+                Circulation = request.Circulation
             };
 
             _db.Add(entity); // добавить в отслеживаемость EF Core-у
             await _db.SaveChangesAsync(); // Сохранить все отслеживаемые объекты
 
-            return _mapper.Map<ClassRoomDto>(entity);
+            return _mapper.Map<BookDto>(entity);
         }
 
-        public async Task<IReadOnlyCollection<ClassRoomDto>> Get(Colors[] colors)
+        public async Task<IReadOnlyCollection<BookDto>> Get(Page[] pages)
         {
-            var query = _db.ClassRooms // получить из таблицы записи (строчки) ClassRooms
-                            .Include(o => o.ClassContent) // так же загрузить из отдельной таблицы записи ClassContent
+            var query = _db.Books // получить из таблицы записи (строчки) Books
                             .AsNoTracking(); // указание для оптимизации, чтобы EF Core не следил за изменениями
 
-            if (colors != null && colors.Length > 0)
+            if (pages != null && pages.Length > 0)
             {
-                query = query.Where(o => colors.Contains(o.Color));
+                query = query.Where(o => pages.Contains(o.Page));
             }
 
-            List<ClassRoom> entities = await query.ToListAsync();
+            List<Book> entities = await query.ToListAsync();
 
             return entities
-                    .Select(_mapper.Map<ClassRoomDto>)
+                    .Select(_mapper.Map<BookDto>)
                     .ToImmutableList();
         }
     }

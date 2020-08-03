@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FullPath.Storage
 {
-    class FullPathContext
+    public class FullPathContext
     {
         public class ExampleFullPathContext : DbContext
         {
@@ -11,8 +11,6 @@ namespace FullPath.Storage
                 : base(options)
             {
             }
-
-            public DbSet<BookContent> BookContents { get; set; }
 
             public DbSet<Book> Books { get; set; }
         }
